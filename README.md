@@ -32,7 +32,6 @@ A full-stack web application for managing and tracking missions. Built for recru
 
 ![Screenshot (76)](https://github.com/user-attachments/assets/5faadbbc-3a29-4f87-864b-e3877118db1e)
 ![Screenshot (77)](https://github.com/user-attachments/assets/f2bc3874-51ea-42c9-81f4-4d4aa9d93e3e)
-![Screenshot (78)](https://github.com/user-attachments/assets/b1157632-fabd-4c85-8048-daaa0812d6ce)
 
 ## 🤝 Contributing
 
