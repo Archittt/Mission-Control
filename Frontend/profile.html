@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mission Control - Profile</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <button id="logoutBtn">Logout</button>
+    <button id="dashboardBtn">Dashboard</button>
+  </nav>
+
+  <main class="container">
+    <h1>Your Profile</h1>
+    <div id="profileDetails">
+      Loading...
+    </div>
+  </main>
+
+  <script>
+    const apiBase = 'http://localhost:5000/api';
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('logoutBtn').onclick = () => {
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
+    };
+
+    document.getElementById('dashboardBtn').onclick = () => {
+      window.location.href = 'dashboard.html';
+    };
+
+    async function loadProfile() {
+      const res = await fetch(`${apiBase}/auth/user`, {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (!res.ok) {
+        localStorage.removeItem('token');
+        window.location.href = 'index.html';
+      }
+      const user = await res.json();
+
+      const profileDiv = document.getElementById('profileDetails');
+      profileDiv.innerHTML = `
+        <p><strong>Username:</strong> ${user.username}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Member Since:</strong> ${new Date(user.createdAt).toLocaleDateString()}</p>
+      `;
+    }
+
+    loadProfile();
+  </script>
+</body>
+</html>
