@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mission Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <button id="logoutBtn">Logout</button>
+    <button id="profileBtn">Profile</button>
+  </nav>
+
+  <main class="container">
+    <h2>Your Missions</h2>
+
+    <form id="addMissionForm" class="mission-form">
+      <input type="text" id="missionTitle" placeholder="Mission Title" required />
+      <input type="text" id="missionDesc" placeholder="Mission Description" />
+      <button type="submit">Add Mission</button>
+    </form>
+
+    <ul id="missionsList" class="mission-list"></ul>
+  </main>
+
+  <script>
+    const apiBase = "http://localhost:5000/api";
+    const token = localStorage.getItem("token");
+
+    if (!token) window.location.href = "index.html";
+
+    const missionsList = document.getElementById("missionsList");
+    const addMissionForm = document.getElementById("addMissionForm");
+
+    document.getElementById("logoutBtn").onclick = () => {
+      localStorage.removeItem("token");
+      window.location.href = "index.html";
+    };
+
+    document.getElementById("profileBtn").onclick = () => {
+      window.location.href = "profile.html";
+    };
+
+    async function loadMissions() {
+      try {
+        const res = await fetch(`${apiBase}/missions`, {
+          headers: { Authorization: "Bearer " + token },
+        });
+
+        if (!res.ok) throw new Error("Fetch failed");
+
+        const missions = await res.json();
+        missionsList.innerHTML = "";
+
+        if (missions.length === 0) {
+          missionsList.innerHTML = "<li>No missions found. Add one!</li>";
+          return;
+        }
+
+        missions.forEach((m) => {
+          const li = document.createElement("li");
+          li.className = `mission-item ${m.status}`;
+
+          li.innerHTML = `
+            <div class="mission-header">
+              <strong>${m.title}</strong>
+              <div class="mission-status">
+                <span class="status-label status-${m.status}">${m.status}</span>
+                <select onchange="updateStatus('${m._id}', this.value)">
+                  <option value="active" ${m.status === "active" ? "selected" : ""}>Active</option>
+                  <option value="completed" ${m.status === "completed" ? "selected" : ""}>Completed</option>
+                </select>
+              </div>
+            </div>
+            <p>${m.description || ""}</p>
+            <div>
+              <button class="complete-btn" onclick="updateStatus('${m._id}', 'completed')">Complete</button>
+              <button class="delete-btn" onclick="deleteMission('${m._id}')">Delete</button>
+            </div>
+          `;
+          missionsList.appendChild(li);
+        });
+      } catch (err) {
+        missionsList.innerHTML = `<li>Error: ${err.message}</li>`;
+      }
+    }
+
+    async function deleteMission(id) {
+      try {
+        const res = await fetch(`${apiBase}/missions/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: "Bearer " + token },
+        });
+
+        if (!res.ok) throw new Error(await res.text() || "Delete failed");
+        loadMissions();
+      } catch (err) {
+        alert("Error deleting mission: " + err.message);
+      }
+    }
+    window.deleteMission = deleteMission;
+
+    async function updateStatus(id, status) {
+      try {
+        const res = await fetch(`${apiBase}/missions/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({ status }),
+        });
+
+        if (!res.ok) throw new Error("Failed to update status");
+        loadMissions();
+      } catch (err) {
+        alert("Error updating status: " + err.message);
+      }
+    }
+    window.updateStatus = updateStatus;
+
+    addMissionForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("missionTitle").value.trim();
+      const description = document.getElementById("missionDesc").value.trim();
+
+      if (!title) return alert("Title is required");
+
+      try {
+        const res = await fetch(`${apiBase}/missions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({ title, description }),
+        });
+
+        if (!res.ok) throw new Error("Failed to add mission");
+        addMissionForm.reset();
+        loadMissions();
+      } catch (err) {
+        alert("Error adding mission: " + err.message);
+      }
+    });
+
+    loadMissions();
+  </script>
+</body>
+</html>
