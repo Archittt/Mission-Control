@@ -28,10 +28,6 @@ A full-stack web application for managing and tracking missions. Built for recru
 
 ---
 
-## 📸 Screenshots
-
-![Screenshot (76)](https://github.com/user-attachments/assets/5faadbbc-3a29-4f87-864b-e3877118db1e)
-![Screenshot (77)](https://github.com/user-attachments/assets/f2bc3874-51ea-42c9-81f4-4d4aa9d93e3e)
 
 ## 🚀 How to Run This Project
 
@@ -53,21 +49,26 @@ Make sure you have the following installed:
 ### 📦 Step-by-Step Setup
 
 #### 1. Clone the Repository
-git clone https://github.com/Archittt/Mission-Control.git
-cd Mission-Control
+- git clone https://github.com/Archittt/Mission-Control.git
+- cd Mission-Control
 #### 2. Install Dependencies
-npm install
+- npm install
 #### 3. Configure Environment Variables
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+- PORT=3000
+- MONGO_URI=your_mongodb_connection_string
+- JWT_SECRET=your_jwt_secret
 #### 4. Start the Backend Server
-node server.js
+- node server.js
 #### 5. Run the Frontend
 ##### Use Live Server in VS Code
-Right-click on Frontend/index.html
-Click "Open with Live Server"
+- Right-click on Frontend/index.html
+- Click "Open with Live Server"
 
+  
+## 📸 Screenshots
+
+![Screenshot (76)](https://github.com/user-attachments/assets/5faadbbc-3a29-4f87-864b-e3877118db1e)
+![Screenshot (77)](https://github.com/user-attachments/assets/f2bc3874-51ea-42c9-81f4-4d4aa9d93e3e)
 
 ## 🤝 Contributing
 
